@@ -66,4 +66,48 @@ class UserRepository implements UserRepositoryInterface
 
         return $query->first();
     }
+
+     /**
+     * @param Request $request
+     * @return User
+     */
+    public function getById($user): ?User
+    {
+        $user = $this->user->find($user->id);
+        $user->load(['roles.permissions']);
+
+        return $user;
+    }
+
+
+    /**
+     * @param Request $request
+     * @param User $user
+     * @return User
+     */
+    public function update(Request $request, User $user): User
+    {
+        $user->user_name = $request->user_name;
+        $user->email = $request->email;
+        $user->save();
+
+        /** Add Role */
+        $user->syncRoles($request['roles']);
+
+        return $user;
+    }
+
+
+     /**
+     * @param Request $request
+     * @param User $user
+     * @return User
+     */
+    public function delete(User $user): ?User
+    {
+        $user = $this->user->find($user->id);
+        $user->delete();
+
+        return $user;
+    }
 }

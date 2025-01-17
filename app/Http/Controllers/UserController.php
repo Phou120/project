@@ -28,22 +28,32 @@ class UserController extends Controller
         return $this->success($this->userService->getAll($request));
     }
 
-    // /**
-    //  * @param User $user
-    //  * @return JsonResponse
-    //  */
-    // public function show(User $user): JsonResponse
-    // {
-    //     return $this->success($this->userService->getById($user));
-    // }
+    /**
+     * @param User $user
+     * @return JsonResponse
+     */
+    public function show(User $user): JsonResponse
+    {
+        return $this->success($this->userService->getById($user));
+    }
 
-    // /**
-    //  * Update the specified resource in storage.
-    //  */
-    // public function update(Request $request, User $user): JsonResponse
-    // {
-    //     return $this->success($this->userService->update($request, $user));
-    // }
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, User $user): JsonResponse
+    {
+        return $this->success($this->userService->update($request, $user));
+    }
+
+
+     /**
+     * delete the specified resource in storage.
+     */
+    public function destroy(User $user): JsonResponse
+    {
+        return $this->success($this->userService->delete($user));
+    }
+
 
     // public function exportUser(QueryRequest $request)
     // {

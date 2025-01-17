@@ -26,4 +26,27 @@ interface UserRepositoryInterface
      */
     public function getByColumn(array $attributes): ?User;
 
+
+      /**
+     * @param $user
+     * @return User|null
+     */
+    public function getById($user): ?User;
+
+
+    /**
+     * @param Request $request
+     * @param User $user
+     * @return User
+     */
+    public function update(Request $request, User $user): User;
+
+
+    /**
+     * @param Request $request
+     * @param User $user
+     * @return User
+     */
+    public function delete(User $user): ?User;
+
 }

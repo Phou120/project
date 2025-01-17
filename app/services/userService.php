@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class UserService
 {
-    // use UserValidateTrait;
+    use UserValidateTrait;
 
     private UserRepositoryInterface $userRepository;
 
@@ -55,4 +55,54 @@ class UserService
     {
         return $this->userRepository->getByColumn($attributes);
     }
+
+     /**
+     * @param array $attributes
+     * @return User|null
+     */
+    public function getById($user): ?User
+    {
+        return $this->userRepository->getById($user);
+    }
+
+
+     /**
+     * @param Request $request
+     * @param User $user
+     * @return User
+     */
+    public function update(Request $request, User $user): User
+    {
+        $this->validateUpdate($request, $user);
+
+        return DB::transaction(function () use ($request, $user) {
+            return $this->userRepository->update($request, $user);
+        });
+    }
+
+
+     /**
+     * @param Request $request
+     * @param User $user
+     * @return User
+     */
+    public function delete(User $user): ?User
+    {
+        return $this->userRepository->delete($user);
+    }
+
+
+    /**
+     * @param QueryRequest $request
+     * @return BinaryFileResponse
+     */
+    // public function exportUser(Request $request): BinaryFileResponse
+    // {
+    //     $user = $this->userRepository->getAll($request);
+    //     if ($request->user_type === 'facility_user') {
+    //         return Excel::download(new FacilityUserExport($user), 'facility users.xlsx');
+    //     } else {
+    //         return Excel::download(new BidderExport($user), 'bidders.xlsx');
+    //     }
+    // }
 }
