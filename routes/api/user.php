@@ -6,4 +6,5 @@ use Illuminate\Support\Facades\Route;
 Route::group(['middleware' => ['auth:api']], function () {
     Route::apiResource('user', UserController::class)->except(['store']);
     Route::post('export-user', [UserController::class, 'exportUser']);
+
 });
