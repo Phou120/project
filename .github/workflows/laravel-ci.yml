@@ -3,10 +3,10 @@ name: Laravel CI
 on:
   push:
     branches:
-      - main  # Runs on every push to the `main` branch
+      - main  # Trigger on push to the `main` branch
   pull_request:
     branches:
-      - main  # Runs on pull requests targeting the `main` branch
+      - main  # Trigger on pull request to the `main` branch
 
 jobs:
   build:
@@ -34,6 +34,10 @@ jobs:
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
 
-      # Step 5: Run tests (optional, but recommended)
+      # Step 5: Generate application key
+      - name: Generate application key
+        run: php artisan key:generate
+
+      # Step 6: Run PHPUnit tests
       - name: Run PHPUnit tests
         run: php artisan test
