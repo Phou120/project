@@ -16,30 +16,65 @@ jobs:
       # Step 1: Checkout the code
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Fetch all history for proper versioning
 
-      # Step 2: Set up PHP environment
+      # Step 2: Generate version number
+      - name: Generate version number
+        id: version
+        run: |
+          # Get count of commits on the current branch
+          COMMIT_COUNT=$(git rev-list --count HEAD)
+          # Get short commit hash
+          COMMIT_HASH=$(git rev-parse --short HEAD)
+          # Create version number (0.0.X format)
+          VERSION="0.0.$COMMIT_COUNT"
+          # Output the version for use in later steps
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
+          echo "::set-output name=version::$VERSION"
+          echo "::set-output name=commit_hash::$COMMIT_HASH"
+
+      # Step 3: Set up PHP environment
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3.17'  # You can change this to your desired PHP version
+          php-version: '8.3.17'  # Your desired PHP version
           extensions: mbstring, bcmath, xml, curl  # Common PHP extensions for Laravel
 
-      # Step 3: Install Composer
+      # Step 4: Install Composer
       - name: Install Composer
         run: |
           curl -sS https://getcomposer.org/installer | php
           mv composer.phar /usr/local/bin/composer
 
-      # Step 4: Install dependencies
+      # Step 5: Install dependencies
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
 
-      # Step 5: Create .env file using ozaytsev86/create-env-file
+      # Step 6: Create .env file
       - name: Create .env file for CI/CD
         run: |
-          cp .env.example .env  # Copy your example .env file, if you have one
-          echo "APP_KEY=base64:KZjVQsb6dLw5LldVaRlXuuuT2cXEa62tZA9IhrgAqfo=" >> .env  # Ensure APP_KEY is set
+          cp .env.example .env  # Copy your example .env file
+          echo "APP_KEY=base64:KZjVQsb6dLw5LldVaRlXuuuT2cXEa62tZA9IhrgAqfo=" >> .env  # Set APP_KEY
+          echo "APP_VERSION=${{ env.VERSION }}" >> .env  # Add version to .env file
 
-      # Step 6: Run PHPUnit tests
+      # Step 7: Run PHPUnit tests
       - name: Run PHPUnit tests
         run: php artisan test
+
+      # Step 8: Create version file for deployment
+      - name: Create version.json file
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          echo '{
+            "version": "${{ env.VERSION }}",
+            "commit": "${{ env.COMMIT_HASH }}",
+            "built_at": "'$(date -u +'%Y-%m-%dT%H:%M:%SZ')'"
+          }' > version.json
+
+      # Step 9: Display build information
+      - name: Display build information
+        run: |
+          echo "✅ Version ${{ env.VERSION }}"
+          echo "Build and Deploy to Dev Server #${{ github.run_number }}: Commit ${{ env.COMMIT_HASH }} pushed by ${{ github.actor }}"
