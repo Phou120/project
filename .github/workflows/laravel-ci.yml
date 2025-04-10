@@ -35,11 +35,10 @@ jobs:
         run: composer install --no-interaction --prefer-dist
 
       # Step 5: Create .env file using ozaytsev86/create-env-file
-      - name: Create .env file
-        uses: ozaytsev86/create-env-file@v1
-        with:
-          DB_URL: mysql://root:123456@127.0.0.1:3306/laravel_11  # Update this with your actual DB connection
-          JWT_SECRET: 'dba67af3714602321c83b89a4cdfdb1cb81b4891132b566f83f18fe61bacff665525e869c2b7700faa5f7a94f1acab6534b4a5660b8056c0dc399c2a96bb037a19031b2d13f4db732ade00dc68767de42b7a3bf308a38262e9d67ee04d096f356ca49d4999a3d70f9d597eb96ed7a025c25a807d0db7227bb4a6c18feabf9e27d76fa79acfda0ceb5f1bb634f209f0b8f663b133ea2b30b9f5c2705b13900ba0cb70f5586da26362041aa70342b0fcc70c6fe12a0a606a124c774ea3caa21b3031057f42192248de4af55a491f8f4483b704664fa40e8d51af6473fe662a5ed73fa4ab7e57e89a410e6a7e28d55362c0fb1bac766333fe3402137b9114098270'
+      - name: Create .env file for CI/CD
+        run: |
+          cp .env.example .env  # Copy your example .env file, if you have one
+          echo "APP_KEY=base64:KZjVQsb6dLw5LldVaRlXuuuT2cXEa62tZA9IhrgAqfo=" >> .env  # Ensure APP_KEY is set
 
       # Step 6: Run PHPUnit tests
       - name: Run PHPUnit tests
