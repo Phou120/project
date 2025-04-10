@@ -21,7 +21,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3.17'  # You can change this to your desired PHP version
+          php-version: '8.1'  # You can change this to your desired PHP version
           extensions: mbstring, bcmath, xml, curl  # Common PHP extensions for Laravel
 
       # Step 3: Install Composer
@@ -34,9 +34,37 @@ jobs:
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
 
-      # Step 5: Generate application key
-      - name: Generate application key
-        run: php artisan key:generate
+      # Step 5: Create .env file with the necessary configuration
+      - name: Create .env file
+        run: |
+          echo "APP_KEY=base64:KZjVQsb6dLw5LldVaRlXuuuT2cXEa62tZA9IhrgAqfo=" > .env
+          echo "APP_NAME=Laravel" >> .env
+          echo "APP_ENV=local" >> .env
+          echo "APP_DEBUG=true" >> .env
+          echo "APP_TIMEZONE=UTC" >> .env
+          echo "APP_URL=http://127.0.0.1:8001" >> .env
+          echo "APP_LOCALE=en" >> .env
+          echo "APP_FALLBACK_LOCALE=en" >> .env
+          echo "APP_FAKER_LOCALE=en_US" >> .env
+          echo "DB_CONNECTION=mysql" >> .env
+          echo "DB_HOST=127.0.0.1" >> .env
+          echo "DB_PORT=3306" >> .env
+          echo "DB_DATABASE=laravel_11" >> .env
+          echo "DB_USERNAME=root" >> .env
+          echo "DB_PASSWORD=123456" >> .env
+          echo "CACHE_STORE=database" >> .env
+          echo "CACHE_PREFIX=" >> .env
+          echo "MAIL_MAILER=log" >> .env
+          echo "MAIL_HOST=127.0.0.1" >> .env
+          echo "MAIL_PORT=2525" >> .env
+          echo "MAIL_USERNAME=null" >> .env
+          echo "MAIL_PASSWORD=null" >> .env
+          echo "MAIL_ENCRYPTION=null" >> .env
+          echo "MAIL_FROM_ADDRESS=hello@example.com" >> .env
+          echo "MAIL_FROM_NAME=${APP_NAME}" >> .env
+          echo "PASSPORT_PERSONAL_ACCESS_CLIENT_URL=/oauth/token" >> .env
+          echo "PASSPORT_PERSONAL_ACCESS_CLIENT_ID=9df91fb1-3c27-4e0b-be82-e3b9952e6e14" >> .env
+          echo "PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=fqfro4NvZRTAA0AWRxs4bDCXv2lGKCQBjUijQ4vC" >> .env
 
       # Step 6: Run PHPUnit tests
       - name: Run PHPUnit tests
