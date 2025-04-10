@@ -21,7 +21,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'  # You can change this to your desired PHP version
+          php-version: '8.3.17'  # You can change this to your desired PHP version
           extensions: mbstring, bcmath, xml, curl  # Common PHP extensions for Laravel
 
       # Step 3: Install Composer
