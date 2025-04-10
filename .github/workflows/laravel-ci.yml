@@ -1,0 +1,39 @@
+name: Laravel CI
+
+on:
+  push:
+    branches:
+      - main  # Runs on every push to the `main` branch
+  pull_request:
+    branches:
+      - main  # Runs on pull requests targeting the `main` branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Runs the job on an Ubuntu virtual machine
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Set up PHP environment
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3.17'  # You can change this to your desired PHP version
+          extensions: mbstring, bcmath, xml, curl  # Common PHP extensions for Laravel
+
+      # Step 3: Install Composer
+      - name: Install Composer
+        run: |
+          curl -sS https://getcomposer.org/installer | php
+          mv composer.phar /usr/local/bin/composer
+
+      # Step 4: Install dependencies
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      # Step 5: Run tests (optional, but recommended)
+      - name: Run PHPUnit tests
+        run: php artisan test
